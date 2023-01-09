@@ -79,6 +79,8 @@ export class AppComponent {
       'Tint/PPF',
       'Rust Module/Rustproofing',
     ];
+    var currentRow = 0;
+    const rowsPerPage = 32;
     var xOffset = doc.internal.pageSize.width / 2;
     doc.text('Report Accessories', xOffset, 20, { align: 'center' });
     autoTable(doc, {
@@ -96,30 +98,21 @@ export class AppComponent {
         ],
       ],
       body: prepare,
-      pageBreak: 'auto',
       theme: 'grid',
       didParseCell: function (data) {
         if (reportHeadings.includes(data.row.cells[0].text[0])) {
           data.cell.styles.fillColor = [224, 224, 224];
         }
-        // if (contentReport.includes(data.cell.text[0])) {
-        //   data.row.pageBreak = 'avoid';
-        //   // this.pageBreak = 'avoid';
-        //   // console.log('rr');
-        // }
-        // else {
-        //   this.pageBreak = 'auto';
-        // }
       },
-
-      // didDrawPage:function(data){
-      //   const pageNumber = doc.internal.pages;
-      //   // const pageData = autoTable(doc)
-      //   for (let index = 0; index < data.; index++) {
-      //     const element = array[index];
-
-      //   }
-      // }
+      didDrawCell: function (data) {
+        if (
+          data.row.index > 0 &&
+          data.row.index % 19 === 0 &&
+          data.column.index === data.table.columns.length - 1
+        ) {
+          doc.addPage();
+        }
+      },
     });
     doc.setFont('Lato-Regular', 'normal');
     doc.save('Report_Accessories_' + '.pdf');
